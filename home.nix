@@ -22,7 +22,7 @@
     nautilus ghostty kitty papers loupe cine google-chrome 
     vscode protonup-qt r2modman zapzap antigravity
     code-cursor bluetui dbeaver-bin jetbrains-toolbox
-    postman mongodb-compass jetbrains.idea-oss
+    postman mongodb-compass jetbrains.idea-oss zed-editor
     obs-studio obs-studio-plugins.obs-pipewire-audio-capture
 
      # flakes
