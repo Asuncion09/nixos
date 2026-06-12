@@ -12,7 +12,7 @@ in
 
   # Bootloader.
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_zen;
     loader = {
       systemd-boot.editor = false;
       systemd-boot.enable = true;
@@ -177,10 +177,13 @@ in
     enable = true; 
     enableOnBoot = false; 
   };
-  virtualisation.waydroid = { 
-    enable = true;
-    package = pkgs.waydroid-nftables;
-  };
+  hardware.uinput.enable = true;
+    services.udev.packages = [
+    pkgs.game-devices-udev-rules  # reglas para la mayoría de mandos
+  ];
+  hardware.steam-hardware.enable = true;
+  programs.appimage.enable = true;
+  programs.appimage.binfmt = true;
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
