@@ -29,10 +29,11 @@ in
     consoleLogLevel = 0;
     initrd.verbose = false;
   };
-  systemd.extraConfig = ''
-    RuntimeWatchdogSec=off
-    ShutdownWatchdogSec=off
-  '';
+  systemd.settings.Manager = {
+    RuntimeWatchdogSec = 0;
+    RebootWatchdogSec = 0;
+    ShutdownWatchdogSec = 0;
+  };
 
   networking.hostName = "Asuncion"; 
   networking.networkmanager.enable = true;
