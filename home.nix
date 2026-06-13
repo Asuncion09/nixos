@@ -24,6 +24,7 @@
     code-cursor bluetui dbeaver-bin jetbrains-toolbox
     postman mongodb-compass jetbrains.idea-oss zed-editor
     obs-studio obs-studio-plugins.obs-pipewire-audio-capture
+    qt6.qtdeclarative
 
      # flakes
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
@@ -93,64 +94,77 @@
     enable = true;
     theme = spicePkgs.themes.text;
   };
-
-    programs.nvchad = { 
+ 
+  programs.nvchad = {
     enable = true;
     backup = false;
+
     extraPackages = with pkgs; [
-      ripgrep
-      fd
-      lua-language-server
-      stylua
-      nil
-      prettierd
+      ripgrep fd
+      lua-language-server stylua
+      nil prettierd
       vscode-css-languageserver
     ];
+
     gcc = pkgs.gcc16;
+
     chadrcConfig = ''
       local M = {}
       M.base46 = {
         theme = "oxocarbon",
         transparency = true,
         hl_override = {
-        	Comment = { italic = true },
-        	["@comment"] = { italic = true },
+          Comment = { italic = true },
+          ["@comment"] = { italic = true },
         },
       }
       M.nvdash = { load_on_startup = true }
       M.ui = {
-            tabufline = {
-               lazyload = false
-           }
+        tabufline = { lazyload = false }
       }
+      M.plugins = "custom.plugins"
       return M
     '';
-    extraConfig = ''
-      -- Lua LSP con settings para Neovim development
-      vim.lsp.config("lua_ls", {
-          settings = {
-            Lua = {
-              runtime = { version = "LuaJIT" },
-              diagnostics = { globals = { "vim" } },
-              workspace = {
-                library = vim.api.nvim_get_runtime_file("", true),
-                checkThirdParty = false,
-              },
-              telemetry = { enable = false },
-            },
-          },
-      })
-      vim.lsp.enable("lua_ls")
 
-      -- QML LSP
-      vim.lsp.config("qmlls", {
-        cmd = { "qmlls", "-E" },
-        filetypes = { "qml", "qmljs" },
-      })
-      vim.lsp.enable("qmlls")
+    extraConfig = ''
+      vim.opt.shiftwidth = 2
     '';
   };
-  
+
+  home.file.".config/nvim/lua/custom/lsp.lua".text = ''
+    vim.lsp.config("lua_ls", {
+      settings = {
+        Lua = {
+          runtime = { version = "LuaJIT" },
+          diagnostics = { globals = { "vim" } },
+          workspace = {
+            library = vim.api.nvim_get_runtime_file("", true),
+            checkThirdParty = false,
+          },
+          telemetry = { enable = false },
+        },
+      },
+    })
+    vim.lsp.enable("lua_ls")
+
+    vim.lsp.config("qmlls", {
+      cmd = { "qmlls", "-E" },
+      filetypes = { "qml", "qmljs" },
+    })
+    vim.lsp.enable("qmlls")
+  '';
+
+  home.file.".config/nvim/lua/custom/plugins.lua".text = ''
+    return {
+      {
+        "neovim/nvim-lspconfig",
+        config = function()
+          require("custom.lsp")
+        end,
+      },
+    }
+  '';
+
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
